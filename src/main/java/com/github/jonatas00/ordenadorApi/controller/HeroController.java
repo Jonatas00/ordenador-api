@@ -2,7 +2,6 @@ package com.github.jonatas00.ordenadorApi.controller;
 
 import com.github.jonatas00.ordenadorApi.dto.hero.HeroRequestDTO;
 import com.github.jonatas00.ordenadorApi.dto.hero.HeroResponseDTO;
-import com.github.jonatas00.ordenadorApi.entity.Hero;
 import com.github.jonatas00.ordenadorApi.service.HeroService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +24,17 @@ public class HeroController {
     return ResponseEntity.status(200).body(createdHero);
   }
 
-
   @GetMapping
   public ResponseEntity<List<HeroResponseDTO>> listHeroByRank() {
     List<HeroResponseDTO> heroes = heroService.getRankedHeroes();
     return ResponseEntity.status(200).body(heroes);
+  }
+
+  @PutMapping("{id}")
+  public ResponseEntity<HeroResponseDTO> updateHero(@PathVariable("id") Long id, @Valid @RequestBody HeroRequestDTO dto) {
+    HeroResponseDTO updateHero = heroService.updateHero(id, dto);
+
+    return ResponseEntity.status(200).body(updateHero);
   }
 
   @DeleteMapping("{id}")
