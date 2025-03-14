@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -62,116 +63,74 @@ public class HeroService {
   }
 
 
-
   private void updateHeroRanks() {
     List<Hero> heroes = heroRepository.findAll();
     if (heroes.isEmpty()) return;
 
-    // First sort by primary criteria: duel (wins from attributes) and then soultrait
     heroes.sort((h1, h2) -> {
       int primary = duel(h1, h2);
-      if (primary != 0) {
-        return primary;
-      }
-      // If primary duel is tied, compare soultrait directly
-      return Double.compare(h2.getSoultrait(), h1.getSoultrait());
+      if (primary != 0) return primary;
+
+      int soultraitComparison = Double.compare(h2.getSoultrait(), h1.getSoultrait());
+      if (soultraitComparison != 0) return soultraitComparison;
+
+      return Double.compare(totalScore(h2), totalScore(h1));
     });
 
-    // Now, for groups that remain tied (i.e. same duel result and soultrait), apply secondary and tertiary tie-breakers.
     for (int i = 0; i < heroes.size(); ) {
       int j = i + 1;
-      // Find the tie group: heroes that are tied with hero at index i.
-      while (j < heroes.size() && isTied(heroes.get(i), heroes.get(j))) {
-        j++;
-      }
-      if (j - i > 1 && i > 0) { // More than one hero tied and there's a reference hero above.
-        Hero reference = heroes.get(i - 1); // The hero immediately above the tie group.
-        List<Hero> tieGroup = heroes.subList(i, j);
+      while (j < heroes.size() && isTied(heroes.get(i), heroes.get(j))) j++;
+
+      if (j - i > 1 && i > 0) {
+        Hero reference = heroes.get(i - 1);
+        List<Hero> tieGroup = new ArrayList<>(heroes.subList(i, j));
         tieGroup.sort((a, b) -> {
-          // Secondary criterion: Compare duel margin against the reference hero (smaller margin is better)
           int marginA = duelMargin(reference, a);
           int marginB = duelMargin(reference, b);
-          if (marginA != marginB) {
-            return Integer.compare(marginA, marginB);
-          }
-          // Tertiary criterion: Total score = (hp + attack + defense + focus + special) * soultrait (higher wins)
-          double scoreA = totalScore(a);
-          double scoreB = totalScore(b);
-          return Double.compare(scoreB, scoreA);
+          if (marginA != marginB) return Integer.compare(marginA, marginB);
+
+          return Double.compare(totalScore(b), totalScore(a));
         });
+        for (int k = 0; k < tieGroup.size(); k++) {
+          heroes.set(i + k, tieGroup.get(k));
+        }
       }
       i = j;
     }
 
-    // Reassign ranks sequentially
     for (int k = 0; k < heroes.size(); k++) {
-      Hero hero = heroes.get(k);
-      hero.setRank(k + 1);
-      heroRepository.save(hero);
-      logger.info("Updated {} to rank {}", hero.getName(), hero.getRank());
+      heroes.get(k).setRank(k + 1);
     }
+    heroRepository.saveAll(heroes);
+    logger.info("Updated {} heroes' ranks", heroes.size());
   }
 
-  // Primary duel: Compare five attributes. Returns a negative value if h1 should rank higher.
-  // Here, we count wins in each attribute.
   private int duel(Hero h1, Hero h2) {
-    int h1Wins = 0;
-    int h2Wins = 0;
-
-    if (h1.getHp() > h2.getHp()) h1Wins++;
-    else if (h1.getHp() < h2.getHp()) h2Wins++;
-
-    if (h1.getAttack() > h2.getAttack()) h1Wins++;
-    else if (h1.getAttack() < h2.getAttack()) h2Wins++;
-
-    if (h1.getDefense() > h2.getDefense()) h1Wins++;
-    else if (h1.getDefense() < h2.getDefense()) h2Wins++;
-
-    if (h1.getFocus() > h2.getFocus()) h1Wins++;
-    else if (h1.getFocus() < h2.getFocus()) h2Wins++;
-
-    if (h1.getSpecial() > h2.getSpecial()) h1Wins++;
-    else if (h1.getSpecial() < h2.getSpecial()) h2Wins++;
-
-    // If tied in wins, this function returns 0.
-    if (h1Wins == h2Wins) {
-      return 0;
-    }
-    // We want the hero with more wins to come first (i.e. lower rank value)
-    return Integer.compare(h2Wins, h1Wins);
+    return compareAttributes(h1, h2, false);
   }
 
-  // Checks if two heroes are tied in primary duel and have equal soultrait.
-  private boolean isTied(Hero a, Hero b) {
-    return duel(a, b) == 0 && Double.compare(a.getSoultrait(), b.getSoultrait()) == 0;
-  }
-
-  // Secondary criterion: Compute the duel margin between a reference hero and a given hero.
-  // The margin is the absolute difference in wins when dueling the reference.
   private int duelMargin(Hero reference, Hero hero) {
-    int refWins = 0;
-    int heroWins = 0;
-
-    if (reference.getHp() > hero.getHp()) refWins++;
-    else if (reference.getHp() < hero.getHp()) heroWins++;
-
-    if (reference.getAttack() > hero.getAttack()) refWins++;
-    else if (reference.getAttack() < hero.getAttack()) heroWins++;
-
-    if (reference.getDefense() > hero.getDefense()) refWins++;
-    else if (reference.getDefense() < hero.getDefense()) heroWins++;
-
-    if (reference.getFocus() > hero.getFocus()) refWins++;
-    else if (reference.getFocus() < hero.getFocus()) heroWins++;
-
-    if (reference.getSpecial() > hero.getSpecial()) refWins++;
-    else if (reference.getSpecial() < hero.getSpecial()) heroWins++;
-
-    return Math.abs(refWins - heroWins);
+    return Math.abs(compareAttributes(reference, hero, true));
   }
 
-  // Tertiary criterion: Total score = sum of all five attributes * soultrait.
+  private int compareAttributes(Hero h1, Hero h2, boolean absolute) {
+    int h1Wins = 0, h2Wins = 0;
+    int[] statsH1 = {h1.getHp(), h1.getAttack(), h1.getDefense(), h1.getFocus(), h1.getSpecial()};
+    int[] statsH2 = {h2.getHp(), h2.getAttack(), h2.getDefense(), h2.getFocus(), h2.getSpecial()};
+
+    for (int i = 0; i < statsH1.length; i++) {
+      if (statsH1[i] > statsH2[i]) h1Wins++;
+      else if (statsH1[i] < statsH2[i]) h2Wins++;
+    }
+    return absolute ? h1Wins - h2Wins : Integer.compare(h2Wins, h1Wins);
+  }
+
+  private boolean isTied(Hero a, Hero b) {
+    return duel(a, b) == 0 && Double.compare(a.getSoultrait(), b.getSoultrait()) == 0 && Double.compare(totalScore(a), totalScore(b)) == 0;
+  }
+
   private double totalScore(Hero hero) {
     return (hero.getHp() + hero.getAttack() + hero.getDefense() + hero.getFocus() + hero.getSpecial()) * hero.getSoultrait();
   }
+
 }
