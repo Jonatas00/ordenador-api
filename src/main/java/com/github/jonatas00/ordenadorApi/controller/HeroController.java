@@ -30,6 +30,13 @@ public class HeroController {
     return ResponseEntity.status(200).body(heroes);
   }
 
+  @GetMapping("{id}")
+  public ResponseEntity<HeroResponseDTO> getHeroById(@PathVariable Long id) {
+    HeroResponseDTO hero = heroService.getHeroById(id);
+
+    return ResponseEntity.status(200).body(hero);
+  }
+
   @PutMapping("{id}")
   public ResponseEntity<HeroResponseDTO> updateHero(@PathVariable("id") Long id, @Valid @RequestBody HeroRequestDTO dto) {
     HeroResponseDTO updateHero = heroService.updateHero(id, dto);
