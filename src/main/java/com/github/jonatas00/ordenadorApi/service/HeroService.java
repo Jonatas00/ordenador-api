@@ -49,12 +49,19 @@ public class HeroService {
     return HeroMapper.toResponseDTO(existingHero);
   }
 
+  @Transactional
   public void deleteHero(Long id) {
     Hero hero = heroRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
     heroRepository.delete(hero);
 
     updateHeroRanks();
+  }
+
+  public HeroResponseDTO getHeroById(Long id) {
+    Hero hero = heroRepository.findById(id).orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
+
+    return HeroMapper.toResponseDTO(hero);
   }
 
   public List<HeroResponseDTO> getRankedHeroes() {
