@@ -1,8 +1,8 @@
 package com.github.jonatas00.ordenadorApi.dto.hero;
 
 public record HeroResponseDTO(
-    Long id,
     Integer rank,
+    Long id,
     String name,
     Integer hp,
     Integer attack,

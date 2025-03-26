@@ -17,8 +17,8 @@ public class HeroMapper {
 
   public static HeroResponseDTO toResponseDTO(Hero hero) {
     return new HeroResponseDTO(
-        hero.getId(),
         hero.getRank(),
+        hero.getId(),
         hero.getName(),
         hero.getHp(),
         hero.getAttack(),
