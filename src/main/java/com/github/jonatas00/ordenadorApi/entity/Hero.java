@@ -23,15 +23,7 @@ public class Hero {
   public Hero() {
   }
 
-  public Hero(
-      String name,
-      Integer hp,
-      Integer attack,
-      Integer defense,
-      Integer focus,
-      Integer special,
-      Double soultrait
-  ) {
+  public Hero(String name, Integer hp, Integer attack, Integer defense, Integer focus, Integer special, Double soultrait) {
     this.name = name;
     this.hp = hp;
     this.attack = attack;
