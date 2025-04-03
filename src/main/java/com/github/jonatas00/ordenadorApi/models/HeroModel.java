@@ -1,4 +1,4 @@
-package com.github.jonatas00.ordenadorApi.entity;
+package com.github.jonatas00.ordenadorApi.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity(name = "tb_hero")
-public class Hero {
+public class HeroModel {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -20,10 +20,10 @@ public class Hero {
   private Integer special;
   private Double soultrait;
 
-  public Hero() {
+  public HeroModel() {
   }
 
-  public Hero(String name, Integer hp, Integer attack, Integer defense, Integer focus, Integer special, Double soultrait) {
+  public HeroModel(String name, Integer hp, Integer attack, Integer defense, Integer focus, Integer special, Double soultrait) {
     this.name = name;
     this.hp = hp;
     this.attack = attack;

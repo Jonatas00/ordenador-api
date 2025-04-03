@@ -1,11 +1,11 @@
 package com.github.jonatas00.ordenadorApi.dto.hero;
 
-import com.github.jonatas00.ordenadorApi.entity.Hero;
+import com.github.jonatas00.ordenadorApi.models.HeroModel;
 
 public class HeroMapper {
 
-  public static Hero toEntity(HeroRequestDTO dto) {
-    return new Hero(
+  public static HeroModel toEntity(HeroRequestDTO dto) {
+    return new HeroModel(
         dto.name(),
         dto.hp(),
         dto.attack(),
@@ -15,7 +15,7 @@ public class HeroMapper {
         dto.soultrait());
   }
 
-  public static HeroResponseDTO toResponseDTO(Hero hero) {
+  public static HeroResponseDTO toResponseDTO(HeroModel hero) {
     return new HeroResponseDTO(
         hero.getRank(),
         hero.getId(),

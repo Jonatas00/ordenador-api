@@ -3,7 +3,7 @@ package com.github.jonatas00.ordenadorApi.service;
 import com.github.jonatas00.ordenadorApi.dto.hero.HeroMapper;
 import com.github.jonatas00.ordenadorApi.dto.hero.HeroRequestDTO;
 import com.github.jonatas00.ordenadorApi.dto.hero.HeroResponseDTO;
-import com.github.jonatas00.ordenadorApi.entity.Hero;
+import com.github.jonatas00.ordenadorApi.models.HeroModel;
 import com.github.jonatas00.ordenadorApi.repository.HeroRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class HeroService {
 
   @Transactional
   public HeroResponseDTO createHero(HeroRequestDTO dto) {
-    Hero hero = HeroMapper.toEntity(dto);
+    HeroModel hero = HeroMapper.toEntity(dto);
 
     heroRepository.save(hero);
 
@@ -37,7 +37,7 @@ public class HeroService {
 
   @Transactional
   public HeroResponseDTO updateHero(Long id, HeroRequestDTO dto) {
-    Hero existingHero = heroRepository.findById(id)
+    HeroModel existingHero = heroRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
 
     BeanUtils.copyProperties(dto, existingHero);
@@ -51,7 +51,7 @@ public class HeroService {
 
   @Transactional
   public void deleteHero(Long id) {
-    Hero hero = heroRepository.findById(id)
+    HeroModel hero = heroRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
     heroRepository.delete(hero);
 
@@ -59,7 +59,7 @@ public class HeroService {
   }
 
   public HeroResponseDTO getHeroById(Long id) {
-    Hero hero = heroRepository.findById(id).orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
+    HeroModel hero = heroRepository.findById(id).orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
 
     return HeroMapper.toResponseDTO(hero);
   }
@@ -71,7 +71,7 @@ public class HeroService {
 
 
   private void updateHeroRanks() {
-    List<Hero> heroes = heroRepository.findAll();
+    List<HeroModel> heroes = heroRepository.findAll();
     if (heroes.isEmpty()) return;
 
     heroes.sort((h1, h2) -> {
@@ -89,8 +89,8 @@ public class HeroService {
       while (j < heroes.size() && isTied(heroes.get(i), heroes.get(j))) j++;
 
       if (j - i > 1 && i > 0) {
-        Hero reference = heroes.get(i - 1);
-        List<Hero> tieGroup = new ArrayList<>(heroes.subList(i, j));
+        HeroModel reference = heroes.get(i - 1);
+        List<HeroModel> tieGroup = new ArrayList<>(heroes.subList(i, j));
         tieGroup.sort((a, b) -> {
           int marginA = duelMargin(reference, a);
           int marginB = duelMargin(reference, b);
@@ -112,15 +112,15 @@ public class HeroService {
     logger.info("Updated {} heroes' ranks", heroes.size());
   }
 
-  private int duel(Hero h1, Hero h2) {
+  private int duel(HeroModel h1, HeroModel h2) {
     return compareAttributes(h1, h2, false);
   }
 
-  private int duelMargin(Hero reference, Hero hero) {
+  private int duelMargin(HeroModel reference, HeroModel hero) {
     return Math.abs(compareAttributes(reference, hero, true));
   }
 
-  private int compareAttributes(Hero h1, Hero h2, boolean absolute) {
+  private int compareAttributes(HeroModel h1, HeroModel h2, boolean absolute) {
     int h1Wins = 0, h2Wins = 0;
     int[] statsH1 = {h1.getHp(), h1.getAttack(), h1.getDefense(), h1.getFocus(), h1.getSpecial()};
     int[] statsH2 = {h2.getHp(), h2.getAttack(), h2.getDefense(), h2.getFocus(), h2.getSpecial()};
@@ -132,11 +132,11 @@ public class HeroService {
     return absolute ? h1Wins - h2Wins : Integer.compare(h2Wins, h1Wins);
   }
 
-  private boolean isTied(Hero a, Hero b) {
+  private boolean isTied(HeroModel a, HeroModel b) {
     return duel(a, b) == 0 && Double.compare(a.getSoultrait(), b.getSoultrait()) == 0 && Double.compare(totalScore(a), totalScore(b)) == 0;
   }
 
-  private double totalScore(Hero hero) {
+  private double totalScore(HeroModel hero) {
     return (hero.getHp() + hero.getAttack() + hero.getDefense() + hero.getFocus() + hero.getSpecial()) * hero.getSoultrait();
   }
 
