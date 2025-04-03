@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("hero")
@@ -31,21 +32,21 @@ public class HeroController {
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<HeroResponseDTO> getHeroById(@PathVariable Long id) {
+  public ResponseEntity<HeroResponseDTO> getHeroById(@PathVariable UUID id) {
     HeroResponseDTO hero = heroService.getHeroById(id);
 
     return ResponseEntity.status(200).body(hero);
   }
 
   @PutMapping("{id}")
-  public ResponseEntity<HeroResponseDTO> updateHero(@PathVariable("id") Long id, @Valid @RequestBody HeroRequestDTO dto) {
+  public ResponseEntity<HeroResponseDTO> updateHero(@PathVariable("id") UUID id, @Valid @RequestBody HeroRequestDTO dto) {
     HeroResponseDTO updateHero = heroService.updateHero(id, dto);
 
     return ResponseEntity.status(200).body(updateHero);
   }
 
   @DeleteMapping("{id}")
-  public ResponseEntity<String> deleteHero(@PathVariable Long id) {
+  public ResponseEntity<String> deleteHero(@PathVariable UUID id) {
     heroService.deleteHero(id);
 
     return ResponseEntity.status(200).body("Character removed");

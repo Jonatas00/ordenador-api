@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class HeroService {
@@ -36,7 +37,7 @@ public class HeroService {
   }
 
   @Transactional
-  public HeroResponseDTO updateHero(Long id, HeroRequestDTO dto) {
+  public HeroResponseDTO updateHero(UUID id, HeroRequestDTO dto) {
     HeroModel existingHero = heroRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
 
@@ -50,7 +51,7 @@ public class HeroService {
   }
 
   @Transactional
-  public void deleteHero(Long id) {
+  public void deleteHero(UUID id) {
     HeroModel hero = heroRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
     heroRepository.delete(hero);
@@ -58,7 +59,7 @@ public class HeroService {
     updateHeroRanks();
   }
 
-  public HeroResponseDTO getHeroById(Long id) {
+  public HeroResponseDTO getHeroById(UUID id) {
     HeroModel hero = heroRepository.findById(id).orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
 
     return HeroMapper.toResponseDTO(hero);
