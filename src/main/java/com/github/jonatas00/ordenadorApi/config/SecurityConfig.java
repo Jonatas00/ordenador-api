@@ -21,18 +21,18 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
-        .csrf(AbstractHttpConfigurer::disable)
-        .httpBasic(Customizer.withDefaults())
-        .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(
-                "/swagger-ui/**",
-                "/swagger-ui.html",
-                "/v3/api-docs/**",
-                "/swagger-resources/**",
-                "/webjars/**"
-            ).permitAll()
-            .anyRequest().authenticated()
-        );
+      .csrf(AbstractHttpConfigurer::disable)
+      .httpBasic(Customizer.withDefaults())
+      .authorizeHttpRequests(authorize -> authorize
+        .requestMatchers(
+          "/swagger-ui/**",
+          "/swagger-ui.html",
+          "/v3/api-docs/**",
+          "/swagger-resources/**",
+          "/webjars/**"
+        ).permitAll()
+        .anyRequest().authenticated()
+      );
 
     return http.build();
   }
@@ -40,10 +40,10 @@ public class SecurityConfig {
   @Bean
   public UserDetailsService userDetailsService() {
     UserDetails user = User.builder()
-        .username("admin")
-        .password(passwordEncoder().encode("admin"))
-        .roles("ADMIN")
-        .build();
+      .username("admin")
+      .password(passwordEncoder().encode("admin"))
+      .roles("ADMIN")
+      .build();
 
     return new InMemoryUserDetailsManager(user);
   }

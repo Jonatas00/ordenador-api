@@ -17,9 +17,8 @@ import java.util.UUID;
 
 @Service
 public class HeroService {
-  private final HeroRepository heroRepository;
-
   private static final Logger logger = LoggerFactory.getLogger(HeroService.class);
+  private final HeroRepository heroRepository;
 
   HeroService(HeroRepository heroRepository) {
     this.heroRepository = heroRepository;
@@ -39,7 +38,7 @@ public class HeroService {
   @Transactional
   public HeroResponseDTO updateHero(UUID id, HeroRequestDTO dto) {
     HeroModel existingHero = heroRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
+      .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
 
     BeanUtils.copyProperties(dto, existingHero);
 
@@ -53,7 +52,7 @@ public class HeroService {
   @Transactional
   public void deleteHero(UUID id) {
     HeroModel hero = heroRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
+      .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
     heroRepository.delete(hero);
 
     updateHeroRanks();
@@ -67,7 +66,7 @@ public class HeroService {
 
   public List<HeroResponseDTO> getRankedHeroes() {
     return heroRepository.findAllByOrderByRankAsc()
-        .stream().map(HeroMapper::toResponseDTO).toList();
+      .stream().map(HeroMapper::toResponseDTO).toList();
   }
 
 
