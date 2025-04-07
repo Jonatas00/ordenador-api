@@ -12,7 +12,9 @@
   <artifactId>ordenadorApi</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>ordenadorApi</name>
-  <description>Demo project for Spring Boot</description>
+  <description>This api was maked with intention of facilite the organizate of characters for a mobile game of
+    BleachThis API was created to make it easier to organize characters for a mobile Bleach game.
+  </description>
   <url/>
   <licenses>
     <license/>
