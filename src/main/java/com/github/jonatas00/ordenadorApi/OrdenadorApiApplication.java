@@ -9,8 +9,6 @@ public class OrdenadorApiApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(OrdenadorApiApplication.class, args);
-
-    System.out.println(new BCryptPasswordEncoder().encode("321234"));
   }
 }
 
