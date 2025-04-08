@@ -1,4 +1,4 @@
-package com.github.jonatas00.ordenadorApi.config;
+package com.github.jonatas00.ordenadorApi.config.security;
 
 import com.github.jonatas00.ordenadorApi.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
