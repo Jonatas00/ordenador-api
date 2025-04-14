@@ -1,6 +1,6 @@
 package com.github.jonatas00.ordenadorApi.dto.hero;
 
-import com.github.jonatas00.ordenadorApi.models.HeroModel;
+import com.github.jonatas00.ordenadorApi.entities.HeroModel;
 
 public class HeroMapper {
 

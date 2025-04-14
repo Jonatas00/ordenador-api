@@ -3,7 +3,7 @@ package com.github.jonatas00.ordenadorApi.service;
 import com.github.jonatas00.ordenadorApi.dto.hero.HeroMapper;
 import com.github.jonatas00.ordenadorApi.dto.hero.HeroRequestDTO;
 import com.github.jonatas00.ordenadorApi.dto.hero.HeroResponseDTO;
-import com.github.jonatas00.ordenadorApi.models.HeroModel;
+import com.github.jonatas00.ordenadorApi.entities.HeroModel;
 import com.github.jonatas00.ordenadorApi.repository.HeroRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.github.jonatas00.ordenadorApi.models;
+package com.github.jonatas00.ordenadorApi.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

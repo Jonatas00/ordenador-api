@@ -1,4 +1,4 @@
-package com.github.jonatas00.ordenadorApi.models;
+package com.github.jonatas00.ordenadorApi.entities;
 
 import com.github.jonatas00.ordenadorApi.enums.RoleName;
 import jakarta.persistence.*;

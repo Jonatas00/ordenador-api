@@ -1,4 +1,4 @@
-package com.github.jonatas00.ordenadorApi.config.security;
+package com.github.jonatas00.ordenadorApi.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

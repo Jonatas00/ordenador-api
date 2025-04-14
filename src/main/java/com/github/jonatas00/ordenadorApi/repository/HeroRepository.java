@@ -1,6 +1,6 @@
 package com.github.jonatas00.ordenadorApi.repository;
 
-import com.github.jonatas00.ordenadorApi.models.HeroModel;
+import com.github.jonatas00.ordenadorApi.entities.HeroModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
