@@ -4,13 +4,12 @@ import com.github.jonatas00.ordenadorApi.enums.RoleName;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.UUID;
-
 @Entity(name = "tb_role")
+@SequenceGenerator(name = "generator_role", sequenceName = "sequence_role")
 public class RoleModel implements GrantedAuthority {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "generator_role")
+  private Long id;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, unique = true)
@@ -22,11 +21,11 @@ public class RoleModel implements GrantedAuthority {
     return this.name.toString();
   }
 
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(UUID id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
