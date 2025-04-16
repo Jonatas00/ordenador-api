@@ -3,6 +3,7 @@ package com.github.jonatas00.ordenadorApi.entities;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity(name = "tb_user")
@@ -18,13 +19,13 @@ public class UserModel {
   @Column(nullable = false)
   private String password;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
     name = "tb_user_roles",
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "role_id")
   )
-  private List<RoleModel> roles;
+  private Set<RoleModel> roles;
 
   public UUID getId() {
     return id;
@@ -50,11 +51,11 @@ public class UserModel {
     this.password = password;
   }
 
-  public List<RoleModel> getRoles() {
+  public Set<RoleModel> getRoles() {
     return roles;
   }
 
-  public void setRoles(List<RoleModel> roles) {
+  public void setRoles(Set<RoleModel> roles) {
     this.roles = roles;
   }
 }
