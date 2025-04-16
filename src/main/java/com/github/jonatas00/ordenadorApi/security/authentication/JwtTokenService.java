@@ -2,6 +2,7 @@ package com.github.jonatas00.ordenadorApi.security.authentication;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.github.jonatas00.ordenadorApi.security.userdetails.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,20 +18,37 @@ public class JwtTokenService {
   private String SECRET;
 
   @Value("${jwt.issuer}")
-  private String ISSUER;
+  private static String ISSUER;
+
+  private static final long EXPIRATION_TIME_SECONDS = 60 * 60 * 4;
 
   public String generateToken(UserDetailsImpl user) {
-    Algorithm algorithm = Algorithm.HMAC256(SECRET);
-    return JWT.create()
-      .withIssuer(ISSUER)
-      .sign(algorithm);
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(SECRET);
+      return JWT.create()
+        .withIssuer(ISSUER)
+        .withIssuedAt(Instant.now())
+        .withExpiresAt(Instant.now().plusSeconds(EXPIRATION_TIME_SECONDS))
+        .withSubject(user.getUsername())
+        .sign(algorithm);
+
+    } catch (JWTCreationException exception) {
+      throw new JWTCreationException("Erro ao gerar token", exception);
+    }
   }
 
-  private Instant creationDate() {
-    return ZonedDateTime.now(ZoneId.of("America/SaoPaulo")).toInstant();
-  }
+  public String getUsernameFromToken(String token) {
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(SECRET);
 
-  private Instant expirationDate() {
-    return ZonedDateTime.now(ZoneId.of("America/SaoPaulo")).plusHours(4).toInstant();
+      return JWT.require(algorithm)
+        .withIssuer(ISSUER)
+        .build()
+        .verify(token)
+        .getSubject();
+
+    } catch (Exception exception) {
+      throw new JWTCreationException("Token inválido ou expirado", exception);
+    }
   }
 }
