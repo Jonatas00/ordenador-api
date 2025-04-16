@@ -5,10 +5,9 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity(name = "tb_role")
-@SequenceGenerator(name = "generator_role", sequenceName = "sequence_role")
 public class RoleModel implements GrantedAuthority {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "generator_role")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Enumerated(EnumType.STRING)
