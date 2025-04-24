@@ -19,7 +19,7 @@ public class UserModel {
   @Column(nullable = false)
   private String password;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER, targetEntity = RoleModel.class)
   @JoinTable(
     name = "tb_user_roles",
     joinColumns = @JoinColumn(name = "user_id"),
