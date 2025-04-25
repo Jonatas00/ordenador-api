@@ -8,19 +8,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 @Service
 public class JwtTokenService {
 
-  @Value("${jwt.secret}")
-  private String SECRET;
-
+  private static final long EXPIRATION_TIME_SECONDS = 60 * 60 * 4;
   @Value("${jwt.issuer}")
   private static String ISSUER;
-
-  private static final long EXPIRATION_TIME_SECONDS = 60 * 60 * 4;
+  @Value("${jwt.secret}")
+  private String SECRET;
 
   public String generateToken(UserDetailsImpl user) {
     try {
