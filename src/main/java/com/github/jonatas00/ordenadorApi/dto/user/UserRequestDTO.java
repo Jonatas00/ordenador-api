@@ -1,11 +1,12 @@
 package com.github.jonatas00.ordenadorApi.dto.user;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 
 public record UserRequestDTO(
-  @NotBlank
+  @NotBlank(message = "Username must not be blank")
   String username,
-  @NotBlank
-  String password) {
+
+  @NotBlank(message = "Password must not be blank")
+  String password
+) {
 }
