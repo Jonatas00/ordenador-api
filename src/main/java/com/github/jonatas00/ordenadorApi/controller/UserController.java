@@ -23,14 +23,14 @@ public class UserController {
 
   @PostMapping("/signup")
   public ResponseEntity<ApiResponse<UserRequestDTO>> register(@Valid @RequestBody UserRequestDTO userDTO) {
-    userService.createUser(userDTO);
+    userService.signup(userDTO);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(201, userDTO));
   }
 
 
   @PostMapping("/login")
-  public void login() {
-    return;
+  public void login(@Valid @RequestBody UserRequestDTO userDTO) {
+    String token = userService.login(userDTO);
   }
 }

@@ -2,7 +2,6 @@ package com.github.jonatas00.ordenadorApi.entities;
 
 import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

@@ -4,6 +4,7 @@ import com.github.jonatas00.ordenadorApi.dto.hero.HeroMapper;
 import com.github.jonatas00.ordenadorApi.dto.hero.HeroRequestDTO;
 import com.github.jonatas00.ordenadorApi.dto.hero.HeroResponseDTO;
 import com.github.jonatas00.ordenadorApi.entities.HeroModel;
+import com.github.jonatas00.ordenadorApi.exception.customExceptions.HeroNotFoundException;
 import com.github.jonatas00.ordenadorApi.repository.HeroRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class HeroService {
   @Transactional
   public HeroResponseDTO updateHero(UUID id, HeroRequestDTO dto) {
     HeroModel existingHero = heroRepository.findById(id)
-      .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
+      .orElseThrow(() -> new HeroNotFoundException("Hero not found with id " + id));
 
     BeanUtils.copyProperties(dto, existingHero);
 
@@ -52,14 +53,14 @@ public class HeroService {
   @Transactional
   public void deleteHero(UUID id) {
     HeroModel hero = heroRepository.findById(id)
-      .orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
+      .orElseThrow(() -> new HeroNotFoundException("Hero not found with id " + id));
     heroRepository.delete(hero);
 
     updateHeroRanks();
   }
 
   public HeroResponseDTO getHeroById(UUID id) {
-    HeroModel hero = heroRepository.findById(id).orElseThrow(() -> new RuntimeException("Hero not found with id " + id));
+    HeroModel hero = heroRepository.findById(id).orElseThrow(() -> new HeroNotFoundException("Hero not found with id " + id));
 
     return HeroMapper.toResponseDTO(hero);
   }
