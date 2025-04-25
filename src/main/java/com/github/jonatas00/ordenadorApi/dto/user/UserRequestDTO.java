@@ -1,10 +1,11 @@
 package com.github.jonatas00.ordenadorApi.dto.user;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 
 public record UserRequestDTO(
-  @Column(nullable = false, unique = true)
+  @NotBlank
   String username,
-  @Column(nullable = false)
+  @NotBlank
   String password) {
 }
