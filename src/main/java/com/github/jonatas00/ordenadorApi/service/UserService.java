@@ -4,6 +4,7 @@ import com.github.jonatas00.ordenadorApi.dto.user.UserRequestDTO;
 import com.github.jonatas00.ordenadorApi.entities.RoleModel;
 import com.github.jonatas00.ordenadorApi.entities.UserModel;
 import com.github.jonatas00.ordenadorApi.enums.RoleName;
+import com.github.jonatas00.ordenadorApi.exception.customExceptions.UserAlreadyExistsException;
 import com.github.jonatas00.ordenadorApi.repository.RoleRepository;
 import com.github.jonatas00.ordenadorApi.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +28,7 @@ public class UserService {
   public UserModel createUser(UserRequestDTO userDTO) {
 
     if (userRepository.findByUsername(userDTO.username()).isPresent()) {
-      throw new RuntimeException("Username is already exists");
+      throw new UserAlreadyExistsException("Username is already exists");
     }
 
     RoleModel role = roleRepository.findByName(RoleName.ROLE_USER);
